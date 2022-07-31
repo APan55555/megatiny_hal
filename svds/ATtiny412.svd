@@ -2119,7 +2119,7 @@
     <peripheral>
       <name>CPU</name>
       <description>CPU</description>
-      <baseAddress>0x34</baseAddress>
+      <baseAddress>0x30</baseAddress>
       <addressBlock>
         <offset>0x0</offset>
         <size>0x1</size>
@@ -2134,7 +2134,7 @@
         <register>
           <name>CCP</name>
           <description>Configuration Change Protection</description>
-          <addressOffset>0x0</addressOffset>
+          <addressOffset>0x04</addressOffset>
           <access>read-write</access>
           <fields>
             <field>
@@ -2163,7 +2163,7 @@
         <register>
           <name>SPH</name>
           <description>Stack Pointer High</description>
-          <addressOffset>0xA</addressOffset>
+          <addressOffset>0xE</addressOffset>
           <access>read-write</access>
           <writeConstraint>
             <range>
@@ -2175,7 +2175,7 @@
         <register>
           <name>SPL</name>
           <description>Stack Pointer Low</description>
-          <addressOffset>0x9</addressOffset>
+          <addressOffset>0xD</addressOffset>
           <access>read-write</access>
           <writeConstraint>
             <range>
@@ -7017,7 +7017,7 @@
     <peripheral>
       <name>SYSCFG</name>
       <description>System Configuration Registers</description>
-      <baseAddress>0xF01</baseAddress>
+      <baseAddress>0xF00</baseAddress>
       <addressBlock>
         <offset>0x0</offset>
         <size>0x2</size>
@@ -7027,7 +7027,7 @@
         <register>
           <name>EXTBRK</name>
           <description>External Break</description>
-          <addressOffset>0x1</addressOffset>
+          <addressOffset>0x2</addressOffset>
           <access>read-write</access>
           <fields>
             <field>
@@ -7041,7 +7041,7 @@
         <register>
           <name>REVID</name>
           <description>Revision ID</description>
-          <addressOffset>0x0</addressOffset>
+          <addressOffset>0x01</addressOffset>
           <access>read-write</access>
           <writeConstraint>
             <range>
