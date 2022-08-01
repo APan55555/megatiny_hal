@@ -1,0 +1,24 @@
+PROVIDE(CRCSCAN_NMI = DefaultHandler);
+PROVIDE(BOD_VLM = DefaultHandler);
+PROVIDE(PORTA_PORT = DefaultHandler);
+PROVIDE(RTC_CNT = DefaultHandler);
+PROVIDE(RTC_PIT = DefaultHandler);
+PROVIDE(TCA0_LUNF_OVF = DefaultHandler);
+PROVIDE(TCA0_HUNF = DefaultHandler);
+PROVIDE(TCA0_LCMP0_CMP0 = DefaultHandler);
+PROVIDE(TCA0_CMP1_LCMP1 = DefaultHandler);
+PROVIDE(TCA0_CMP2_LCMP2 = DefaultHandler);
+PROVIDE(TCB0_INT = DefaultHandler);
+PROVIDE(TCD0_OVF = DefaultHandler);
+PROVIDE(TCD0_TRIG = DefaultHandler);
+PROVIDE(AC0_AC = DefaultHandler);
+PROVIDE(ADC0_RESRDY = DefaultHandler);
+PROVIDE(ADC0_WCOMP = DefaultHandler);
+PROVIDE(TWI0_TWIS = DefaultHandler);
+PROVIDE(TWI0_TWIM = DefaultHandler);
+PROVIDE(SPI0_INT = DefaultHandler);
+PROVIDE(USART0_RXC = DefaultHandler);
+PROVIDE(USART0_DRE = DefaultHandler);
+PROVIDE(USART0_TXC = DefaultHandler);
+PROVIDE(NVMCTRL_EE = DefaultHandler);
+
