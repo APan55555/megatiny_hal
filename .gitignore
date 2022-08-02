@@ -1,3 +1,4 @@
 /target
 /Cargo.lock
 /my-custom-avr-unknown-gnu-atmega328.json
+/.cargo
