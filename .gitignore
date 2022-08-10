@@ -2,3 +2,4 @@
 /Cargo.lock
 /my-custom-avr-unknown-gnu-atmega328.json
 /.cargo
+/test_pcb_boards/attiny412led_test/attiny412led_test-backups
