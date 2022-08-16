@@ -3,18 +3,20 @@
 
 extern crate panic_halt;
 
-use megatiny_hal::Peripherals;
 use core::ops::Deref;
+use megatiny_hal::Peripherals;
 
 #[no_mangle]
-pub extern fn main() {
-    let peripherals = unsafe {Peripherals::steal()};
+pub extern "C" fn main() {
+    let peripherals = unsafe { Peripherals::steal() };
     let vporta = peripherals.VPORTA.deref();
     let rtc = peripherals.RTC.deref();
 
-    vporta.dir.write(|w| unsafe {w.bits(0b1 << 3)});
+    vporta.dir.write(|w| unsafe { w.bits(0b1 << 3) });
     loop {
-        vporta.out.modify(|r, w| unsafe {w.bits(r.bits() | 0b1 << 3)});
+        vporta
+            .out
+            .modify(|r, w| unsafe { w.bits(r.bits() | 0b1 << 3) });
         //delays 1 second
         rtc.cnt.reset();
         let mut start = rtc.cnt.read().bits();
@@ -22,7 +24,9 @@ pub extern fn main() {
             continue;
         }
 
-        vporta.out.modify(|r, w| unsafe{w.bits(r.bits() & !(0b1 << 3))});
+        vporta
+            .out
+            .modify(|r, w| unsafe { w.bits(r.bits() & !(0b1 << 3)) });
         //delays 1 second
         rtc.cnt.reset();
         start = rtc.cnt.read().bits();

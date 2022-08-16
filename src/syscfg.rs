@@ -1,10 +1,9 @@
 #[doc = r"Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
-    _reserved0: [u8; 0x01],
-    #[doc = "0x01 - Revision ID"]
+    #[doc = "0x00 - Revision ID"]
     pub revid: crate::Reg<revid::REVID_SPEC>,
-    #[doc = "0x02 - External Break"]
+    #[doc = "0x01 - External Break"]
     pub extbrk: crate::Reg<extbrk::EXTBRK_SPEC>,
 }
 #[doc = "EXTBRK register accessor: an alias for `Reg<EXTBRK_SPEC>`"]

@@ -176,7 +176,7 @@ pub struct CPU {
 unsafe impl Send for CPU {}
 impl CPU {
     #[doc = r"Pointer to the register block"]
-    pub const PTR: *const cpu::RegisterBlock = 0x30 as *const _;
+    pub const PTR: *const cpu::RegisterBlock = 0x34 as *const _;
     #[doc = r"Return the pointer to the register block"]
     #[inline(always)]
     pub const fn ptr() -> *const cpu::RegisterBlock {
@@ -624,7 +624,7 @@ pub struct SYSCFG {
 unsafe impl Send for SYSCFG {}
 impl SYSCFG {
     #[doc = r"Pointer to the register block"]
-    pub const PTR: *const syscfg::RegisterBlock = 0x0f00 as *const _;
+    pub const PTR: *const syscfg::RegisterBlock = 0x0f01 as *const _;
     #[doc = r"Return the pointer to the register block"]
     #[inline(always)]
     pub const fn ptr() -> *const syscfg::RegisterBlock {
