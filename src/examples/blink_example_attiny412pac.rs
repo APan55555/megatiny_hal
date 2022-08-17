@@ -9,28 +9,37 @@ use megatiny_hal::Peripherals;
 #[no_mangle]
 pub extern "C" fn main() {
     let peripherals = unsafe { Peripherals::steal() };
-    let vporta = peripherals.VPORTA.deref();
+    let porta = peripherals.PORTA.deref();
     let rtc = peripherals.RTC.deref();
 
-    vporta.dir.write(|w| unsafe { w.bits(0b1 << 3) });
-    loop {
-        vporta
-            .out
-            .modify(|r, w| unsafe { w.bits(r.bits() | 0b1 << 3) });
-        //delays 1 second
-        rtc.cnt.reset();
-        let mut start = rtc.cnt.read().bits();
-        while rtc.cnt.read().bits() - start < 1000 {
-            continue;
-        }
+    //makes sure everything is synced
+    while rtc.status.read().bits() > 0 {
+        continue;
+    }
 
-        vporta
-            .out
-            .modify(|r, w| unsafe { w.bits(r.bits() & !(0b1 << 3)) });
+    //selects 1kHz clock
+    rtc.
+        clksel.
+        write(|w| {w.clksel().int1k()});
+
+    //sets the top to max
+    rtc.
+        per.
+        write(|w| unsafe {w.bits(0xFFFF)});
+
+    //enables rtc
+    rtc.
+        ctrla.
+        write(|w| unsafe {w.bits(1)});
+
+    porta.dirset.write(|w| unsafe { w.bits(0b1 << 3) }); //sets PA3 as output
+    loop {
+        porta
+            .outtgl
+            .write(|w| unsafe { w.bits(0b1 << 3) });
         //delays 1 second
         rtc.cnt.reset();
-        start = rtc.cnt.read().bits();
-        while rtc.cnt.read().bits() - start < 1000 {
+        while rtc.cnt.read().bits() < 500 {
             continue;
         }
     }
