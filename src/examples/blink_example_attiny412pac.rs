@@ -4,7 +4,7 @@
 extern crate panic_halt;
 
 use core::ops::Deref;
-use megatiny_hal::Peripherals;
+use megatiny_hal::attiny412pac::Peripherals;
 
 #[no_mangle]
 pub extern "C" fn main() {
@@ -39,7 +39,7 @@ pub extern "C" fn main() {
             .write(|w| unsafe { w.bits(0b1 << 3) });
         //delays 1 second
         rtc.cnt.reset();
-        while rtc.cnt.read().bits() < 500 {
+        while rtc.cnt.read().bits() < 2000 {
             continue;
         }
     }
