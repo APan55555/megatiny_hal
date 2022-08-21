@@ -2,17 +2,10 @@
 name = "megatiny_hal"
 version = "0.1.0"
 edition = "2021"
-
-[profile.release]
-lto = true
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "A hardware abstraction layer for attiny and atmega avr devices."
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 bare-metal = "0.2.x"
 panic-halt = "0.2.0"
 vcell = "0.1.x"
-
-[[bin]]
-name = "blink_example_attiny412"
-path = "src/examples/blink_example_attiny412.rs"
