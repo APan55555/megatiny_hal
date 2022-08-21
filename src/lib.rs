@@ -1,3 +1,9 @@
+//! Crate containing the hardware abstraction layers for attiny and atmega avr microcontrollers
+//! 
+//! # Contains support for
+//! 
+//! - attiny412
+
 #![no_std]
 #![feature(lang_items)]
 
@@ -7,7 +13,7 @@ pub mod attiny412;
 #[lang = "eh_personality"]
 extern "C" fn eh_personality() {}
 
-/// Returns a Pin enum with input formatted ([peripherals], [pin number formatted [port][pin number]] input/output)
+/// Returns a Pin enum with input formatted (\[peripherals\], \[pin number formatted \[port\]\[pin number\]\] input/output)
 /// 
 /// # Examples
 /// 

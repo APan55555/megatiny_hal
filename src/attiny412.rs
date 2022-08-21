@@ -1,3 +1,5 @@
+//! The hardware abstraction layer for the attiny412
+
 use crate::attiny412pac;
 pub use crate::attiny412pac::Peripherals;
 use core::ops::Deref;
