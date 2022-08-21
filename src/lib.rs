@@ -1,7 +1,11 @@
 #![no_std]
+#![feature(lang_items)]
 
 pub mod attiny412pac;
 pub mod attiny412;
+
+#[lang = "eh_personality"]
+extern "C" fn eh_personality() {}
 
 #[macro_export]
 macro_rules! Pin {

@@ -39,7 +39,7 @@ pub extern "C" fn main() {
             .write(|w| unsafe { w.bits(0b1 << 3) });
         //delays 1 second
         rtc.cnt.reset();
-        while rtc.cnt.read().bits() < 2000 {
+        while rtc.cnt.read().bits() < 1000 {
             continue;
         }
     }
