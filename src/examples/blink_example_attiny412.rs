@@ -10,11 +10,11 @@ use megatiny_hal::Pin;
 
 #[no_mangle]
 pub extern "C" fn main() {
-    let periphs = attiny412::get_periphs();
-    let clock = attiny412::init_timer(&periphs, TimeUnit::Ms);
-    let led_pin = Pin!(periphs, PA3 output);
+    let periphs = attiny412::get_periphs();  // gets the peripherals
+    let timer = attiny412::init_timer(&periphs, TimeUnit::Ms);  // initializes the timer
+    let led_pin = Pin!(periphs, PA3 output);  // creates an led pin for PA3 as an output
     loop {
-        led_pin.toggle(&periphs);
-        attiny412::delay(clock, 1000);
+        led_pin.toggle(&periphs);  // toggles the led pin
+        attiny412::delay(timer, 1000);  // delays for 1000 milliseconds (1 second)
     }
 }

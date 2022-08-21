@@ -7,6 +7,19 @@ pub mod attiny412;
 #[lang = "eh_personality"]
 extern "C" fn eh_personality() {}
 
+/// Returns a Pin enum with input formatted ([peripherals], [pin number formatted [port][pin number]] input/output)
+/// 
+/// # Examples
+/// 
+/// ```
+/// let periphs = get_periphs();
+/// let led_pin = Pin!(periphs, PA3 output);
+/// ```
+/// 
+/// ```
+/// let periphs = get_periphs();
+/// let button_pin = Pin!(periphs, PA1 input);
+/// ```
 #[macro_export]
 macro_rules! Pin {
     ($p:expr, PA0 output) => {
