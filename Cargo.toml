@@ -15,5 +15,5 @@ panic-halt = "0.2.0"
 vcell = "0.1.x"
 
 [[bin]]
-name = "blink_example_attiny412pac"
-path = "src/examples/blink_example_attiny412pac.rs"
+name = "blink_example_attiny412"
+path = "src/examples/blink_example_attiny412.rs"
