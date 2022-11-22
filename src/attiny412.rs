@@ -1,7 +1,7 @@
 //! The hardware abstraction layer for the attiny412
 
-use crate::attiny412pac;
-pub use crate::attiny412pac::Peripherals;
+use crate::attiny412pac::Peripherals;
+use crate::GPIO;
 use core::ops::Deref;
 
 /// Gets the peripherals and returns them
@@ -22,13 +22,13 @@ pub fn get_periphs() -> Peripherals {
 /// ```
 /// let periphs = get_periphs();
 /// let milliseconds_unit = TimeUnit::Ms;
-/// let timer = init_timer(&periphs, milliseconds_unit);
+/// init_timer(&periphs, milliseconds_unit);
 /// ```
 /// 
 /// ```
 /// let periphs = get_periphs();
 /// let microseconds_unit = TimeUnit::Us;
-/// let timer = init_timer(&periphs, microseconds_unit);
+/// init_timer(&periphs, microseconds_unit);
 /// ```
 pub enum TimeUnit {
     Ms,
@@ -41,14 +41,15 @@ pub enum TimeUnit {
 /// 
 /// ```
 /// let periphs = get_periphs();
-/// let milliseconds_timer = init_timer(&periphs, TimeUnit::Ms);
+/// init_timer(&periphs, TimeUnit::Ms);  // initialize timer for milliseconds
 /// ```
 /// 
 /// ```
 /// let periphs = get_periphs();
-/// let microseconds_timer = init_timer(&periphs, TimeUnit::Us);
+/// init_timer(&periphs, TimeUnit::Us);  // initialize timer for microseconds
+/// ```
 #[inline(always)]
-pub fn init_timer(p: &Peripherals, unit: TimeUnit) -> &attiny412pac::rtc::RegisterBlock {
+pub fn init_timer(p: &Peripherals, unit: TimeUnit) {
     let rtc = p.RTC.deref();
     //makes sure everything is synced
     while rtc.status.read().bits() > 0 {
@@ -66,7 +67,7 @@ pub fn init_timer(p: &Peripherals, unit: TimeUnit) -> &attiny412pac::rtc::Regist
                 write(|w| {w.clksel().int1k()});
         },
         TimeUnit::Us => {
-            //selects 1kHz clock
+            //selects 32kHz clock
             rtc.
                 clksel.
                 write(|w| {w.clksel().int32k()});
@@ -76,19 +77,10 @@ pub fn init_timer(p: &Peripherals, unit: TimeUnit) -> &attiny412pac::rtc::Regist
     rtc.
         ctrla.
         write(|w| unsafe {w.bits(1)});
-
-    rtc
 }
 
-/// Enum that specifies a pin initialized with the Pin! macro in lib.rs
-/// 
-/// # Example
-/// 
-/// ```
-/// let periphs = get_periphs();
-/// let led_pin = Pin!(periphs, PA3 output);
-/// ```
-pub enum Pin {
+/// Enum that specifies a pin
+pub enum PinSelect {
     PA0,
     PA1,
     PA2,
@@ -97,8 +89,28 @@ pub enum Pin {
     PA7,
 }
 
+/// Struct that specifies a pin initialized with the Pin! macro in lib.rs
+/// 
+/// # Example
+/// 
+/// ```
+/// let periphs = get_periphs();
+/// let led_pin = Pin!(periphs, PA3 output);
+/// ```
+pub struct Pin<'a> {
+    p: &'a Peripherals,
+    pin: PinSelect,
+}
+
+impl Pin<'_> {
+    /// Constructor
+    pub fn new(p: &Peripherals, pin: PinSelect) -> Pin {
+        Pin {p, pin}
+    }
+}
+
 /// Gives support for reading, writing, and toggling the pin
-impl Pin {
+impl GPIO for Pin<'_> {
     /// Writes the pin high
     /// 
     /// # Example
@@ -106,34 +118,28 @@ impl Pin {
     /// ```
     /// let periphs = get_periphs();
     /// let led_pin = Pin!(periphs, PA3 output);
-    /// led_pin.write_high(&periphs);
+    /// led_pin.write_high();
     /// ```
     #[inline(always)]
-    pub fn write_high(&self, p: &Peripherals) {
-        match self {
-            Self::PA0 => {
-                let porta = p.PORTA.deref();
-                porta.outset.write(|w| unsafe { w.bits(0b1) });
+    fn write_high(&self) {
+        match self.pin {
+            PinSelect::PA0 => {
+                self.p.PORTA.deref().outset.write(|w| unsafe { w.bits(0b1) });
             },
-            Self::PA1 => {
-                let porta = p.PORTA.deref();
-                porta.outset.write(|w| unsafe { w.bits(0b1 << 1) })
+            PinSelect::PA1 => {
+                self.p.PORTA.deref().outset.write(|w| unsafe { w.bits(0b1 << 1) })
             },
-            Self::PA2 => {
-                let porta = p.PORTA.deref();
-                porta.outset.write(|w| unsafe { w.bits(0b1 << 2) })
+            PinSelect::PA2 => {
+                self.p.PORTA.deref().outset.write(|w| unsafe { w.bits(0b1 << 2) })
             },
-            Self::PA3 => {
-                let porta = p.PORTA.deref();
-                porta.outset.write(|w| unsafe { w.bits(0b1 << 3) })
+            PinSelect::PA3 => {
+                self.p.PORTA.deref().outset.write(|w| unsafe { w.bits(0b1 << 3) })
             },
-            Self::PA6 => {
-                let porta = p.PORTA.deref();
-                porta.outset.write(|w| unsafe { w.bits(0b1 << 6) })
+            PinSelect::PA6 => {
+                self.p.PORTA.deref().outset.write(|w| unsafe { w.bits(0b1 << 6) })
             },
-            Self::PA7 => {
-                let porta = p.PORTA.deref();
-                porta.outset.write(|w| unsafe { w.bits(0b1 << 7) })
+            PinSelect::PA7 => {
+                self.p.PORTA.deref().outset.write(|w| unsafe { w.bits(0b1 << 7) })
             },
         }
     }
@@ -145,34 +151,28 @@ impl Pin {
     /// ```
     /// let periphs = get_periphs();
     /// let led_pin = Pin!(periphs, PA3 output);
-    /// led_pin.write_low(&periphs);
+    /// led_pin.write_low();
     /// ```
     #[inline(always)]
-    pub fn write_low(&self, p: &Peripherals) {
-        match self {
-            Self::PA0 => {
-                let porta = p.PORTA.deref();
-                porta.outclr.write(|w| unsafe { w.bits(0b1) });
+    fn write_low(&self) {
+        match self.pin {
+            PinSelect::PA0 => {
+                self.p.PORTA.deref().outclr.write(|w| unsafe { w.bits(0b1) });
             },
-            Self::PA1 => {
-                let porta = p.PORTA.deref();
-                porta.outclr.write(|w| unsafe { w.bits(0b1 << 1) })
+            PinSelect::PA1 => {
+                self.p.PORTA.deref().outclr.write(|w| unsafe { w.bits(0b1 << 1) })
             },
-            Self::PA2 => {
-                let porta = p.PORTA.deref();
-                porta.outclr.write(|w| unsafe { w.bits(0b1 << 2) })
+            PinSelect::PA2 => {
+                self.p.PORTA.deref().outclr.write(|w| unsafe { w.bits(0b1 << 2) })
             },
-            Self::PA3 => {
-                let porta = p.PORTA.deref();
-                porta.outclr.write(|w| unsafe { w.bits(0b1 << 3) })
+            PinSelect::PA3 => {
+                self.p.PORTA.deref().outclr.write(|w| unsafe { w.bits(0b1 << 3) })
             },
-            Self::PA6 => {
-                let porta = p.PORTA.deref();
-                porta.outclr.write(|w| unsafe { w.bits(0b1 << 6) })
+            PinSelect::PA6 => {
+                self.p.PORTA.deref().outclr.write(|w| unsafe { w.bits(0b1 << 6) })
             },
-            Self::PA7 => {
-                let porta = p.PORTA.deref();
-                porta.outclr.write(|w| unsafe { w.bits(0b1 << 7) })
+            PinSelect::PA7 => {
+                self.p.PORTA.deref().outclr.write(|w| unsafe { w.bits(0b1 << 7) })
             },
         }
     }
@@ -184,34 +184,28 @@ impl Pin {
     /// ```
     /// let periphs = get_periphs();
     /// let led_pin = Pin!(periphs, PA3 output);
-    /// led_pin.write_high(&periphs);
+    /// led_pin.toggle();
     /// ```
     #[inline(always)]
-    pub fn toggle(&self, p: &Peripherals) {
-        match self {
-            Self::PA0 => {
-                let porta = p.PORTA.deref();
-                porta.outtgl.write(|w| unsafe { w.bits(0b1) });
+    fn toggle(&self) {
+        match self.pin {
+            PinSelect::PA0 => {
+                self.p.PORTA.deref().outtgl.write(|w| unsafe { w.bits(0b1) });
             },
-            Self::PA1 => {
-                let porta = p.PORTA.deref();
-                porta.outtgl.write(|w| unsafe { w.bits(0b1 << 1) })
+            PinSelect::PA1 => {
+                self.p.PORTA.deref().outtgl.write(|w| unsafe { w.bits(0b1 << 1) })
             },
-            Self::PA2 => {
-                let porta = p.PORTA.deref();
-                porta.outtgl.write(|w| unsafe { w.bits(0b1 << 2) })
+            PinSelect::PA2 => {
+                self.p.PORTA.deref().outtgl.write(|w| unsafe { w.bits(0b1 << 2) })
             },
-            Self::PA3 => {
-                let porta = p.PORTA.deref();
-                porta.outtgl.write(|w| unsafe { w.bits(0b1 << 3) })
+            PinSelect::PA3 => {
+                self.p.PORTA.deref().outtgl.write(|w| unsafe { w.bits(0b1 << 3) })
             },
-            Self::PA6 => {
-                let porta = p.PORTA.deref();
-                porta.outtgl.write(|w| unsafe { w.bits(0b1 << 6) })
+            PinSelect::PA6 => {
+                self.p.PORTA.deref().outtgl.write(|w| unsafe { w.bits(0b1 << 6) })
             },
-            Self::PA7 => {
-                let porta = p.PORTA.deref();
-                porta.outtgl.write(|w| unsafe { w.bits(0b1 << 7) })
+            PinSelect::PA7 => {
+                self.p.PORTA.deref().outtgl.write(|w| unsafe { w.bits(0b1 << 7) })
             },
         }
     }
@@ -223,34 +217,28 @@ impl Pin {
     /// ```
     /// let periphs = get_periphs();
     /// let button_pin = Pin!(periphs, PA3 input);
-    /// let button_state = button_pin.read(&periphs);
+    /// let button_state = button_pin.read();
     /// ```
     #[inline(always)]
-    pub fn read(&self, p: &Peripherals) -> bool {
-        match self {
-            Self::PA0 => {
-                let porta = p.PORTA.deref();
-                porta.in_.read().pa0().bit()
+    fn read(&self) -> bool {
+        match self.pin {
+            PinSelect::PA0 => {
+                self.p.PORTA.deref().in_.read().pa0().bit()
             },
-            Self::PA1 => {
-                let porta = p.PORTA.deref();
-                porta.in_.read().pa1().bit()
+            PinSelect::PA1 => {
+                self.p.PORTA.deref().in_.read().pa1().bit()
             },
-            Self::PA2 => {
-                let porta = p.PORTA.deref();
-                porta.in_.read().pa2().bit()
+            PinSelect::PA2 => {
+                self.p.PORTA.deref().in_.read().pa2().bit()
             },
-            Self::PA3 => {
-                let porta = p.PORTA.deref();
-                porta.in_.read().pa3().bit()
+            PinSelect::PA3 => {
+                self.p.PORTA.deref().in_.read().pa3().bit()
             },
-            Self::PA6 => {
-                let porta = p.PORTA.deref();
-                porta.in_.read().pa6().bit()
+            PinSelect::PA6 => {
+                self.p.PORTA.deref().in_.read().pa6().bit()
             },
-            Self::PA7 => {
-                let porta = p.PORTA.deref();
-                porta.in_.read().pa7().bit()
+            PinSelect::PA7 => {
+                self.p.PORTA.deref().in_.read().pa7().bit()
             },
         }
     }
@@ -266,11 +254,12 @@ impl Pin {
 /// 
 /// ```
 /// let periphs = get_periphs();
-/// let timer = init_timer(&periphs, TimeUnit::Ms);
-/// delay(timer, 1000);
+/// init_timer(&periphs, TimeUnit::Ms);
+/// delay(&periphs, 1000);
 /// ```
 #[inline(always)]
-pub fn delay(timer: &attiny412pac::rtc::RegisterBlock, del: u32) {
+pub fn delay(p: &Peripherals, del: u32) {
+    let timer = p.RTC.deref();
     timer.cnt.reset();
     while (timer.cnt.read().bits() as u32) < (del * 1024) / 1000 {
         continue;
@@ -289,10 +278,11 @@ pub fn delay(timer: &attiny412pac::rtc::RegisterBlock, del: u32) {
 /// 
 /// ```
 /// let periphs = get_periphs();
-/// let timer = init_timer(&periphs, TimeUnit::Us);
-/// delay_us(timer, 1000000);
+/// init_timer(&periphs, TimeUnit::Us);
+/// delay_us(&periphs, 1000000);
 /// ```
-pub fn delay_us(timer: &attiny412pac::rtc::RegisterBlock, del: u64) {
+pub fn delay_us(p: &Peripherals, del: u64) {
+    let timer = p.RTC.deref();
     timer.cnt.reset();
     while (timer.cnt.read().bits() as u64) < (del * 512) / 15625 {
         continue;
