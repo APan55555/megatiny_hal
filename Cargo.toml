@@ -5,6 +5,7 @@ edition = "2021"
 description = "A hardware abstraction layer for attiny and atmega avr devices."
 license = "MIT OR Apache-2.0"
 authors = ["Alaric Pan"]
+homepage = "http://alaricpan.org/projects/megatiny_hal.html"
 repository = "https://github.com/APan55555/megatiny_hal"
 
 [dependencies]
