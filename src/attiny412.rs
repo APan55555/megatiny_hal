@@ -11,6 +11,7 @@ use core::ops::Deref;
 /// ```
 /// let periphs = get_periphs();
 /// ```
+#[inline(always)]
 pub fn get_periphs() -> Peripherals {
     unsafe { Peripherals::steal() }
 }
@@ -104,6 +105,7 @@ pub struct Pin<'a> {
 
 impl Pin<'_> {
     /// Constructor
+    #[inline(always)]
     pub fn new(p: &Peripherals, pin: PinSelect) -> Pin {
         Pin {p, pin}
     }
@@ -281,6 +283,7 @@ pub fn delay(p: &Peripherals, del: u32) {
 /// init_timer(&periphs, TimeUnit::Us);
 /// delay_us(&periphs, 1000000);
 /// ```
+#[inline(always)]
 pub fn delay_us(p: &Peripherals, del: u64) {
     let timer = p.RTC.deref();
     timer.cnt.reset();
