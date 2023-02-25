@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<device xs:noNamespaceSchemaLocation="CMSIS-SVD.xsd" schemaVersion="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance">
+<device xs:noNamespaceSchemaLocation="CMSIS-SVD.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.1">
   <vendor>Atmel</vendor>
   <name>ATtiny412</name>
   <description>No description available.</description>
@@ -2183,6 +2183,62 @@
               <maximum>255</maximum>
             </range>
           </writeConstraint>
+        </register>
+        <register>
+          <name>SREG</name>
+          <description>Status Register</description>
+          <addressOffset>0xB</addressOffset>
+          <access>read-write</access>
+          <fields>
+            <field>
+              <name>C</name>
+              <description>Carry Flag</description>
+              <bitRange>[0:0]</bitRange>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>Z</name>
+              <description>Zero Flag</description>
+              <bitRange>[1:1]</bitRange>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>N</name>
+              <description>Negative Flag</description>
+              <bitRange>[2:2]</bitRange>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>V</name>
+              <description>Two's Complement Overflow Flag</description>
+              <bitRange>[3:3]</bitRange>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>S</name>
+              <description>N Exclusive Or V Flag</description>
+              <bitRange>[4:4]</bitRange>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>H</name>
+              <description>Half Carry Flag</description>
+              <bitRange>[5:5]</bitRange>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>T</name>
+              <description>Bit Copy Storage</description>
+              <bitRange>[6:6]</bitRange>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>I</name>
+              <description>Global Interrupt Enable</description>
+              <bitRange>[7:7]</bitRange>
+              <access>read-write</access>
+            </field>
+          </fields>          
         </register>
       </registers>
       <interrupt>
