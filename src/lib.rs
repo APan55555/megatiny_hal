@@ -133,7 +133,7 @@ macro_rules! Pin {
             Pin::new($p, PinSelect::PA7)
         }
     };
-    ($p:expr, PA7 output) => {
+    ($p:expr, PA7 input) => {
         {
             let porta = $p.PORTA.deref();
             porta.dirclr.write(|w| unsafe { w.bits(0b1 << 7) });
@@ -152,3 +152,15 @@ pub trait GPIO {
 
     fn read(&self) -> bool;
 }
+
+/*
+#[macro_export]
+macro_rules! Interrupt {
+    (attiny412, $p:expr, $i:expr, $f:expr) => {
+        match $i {
+            Interrupt::CRCSCAN_NMI => {
+                $p.NVMCTRL.deref()
+            }
+        }
+    }
+}*/

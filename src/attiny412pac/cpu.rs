@@ -8,6 +8,8 @@ pub struct RegisterBlock {
     pub spl: crate::attiny412pac::Reg<spl::SPL_SPEC>,
     #[doc = "0x0a - Stack Pointer High"]
     pub sph: crate::attiny412pac::Reg<sph::SPH_SPEC>,
+    #[doc = "0x0b - Status Register"]
+    pub sreg: crate::attiny412pac::Reg<sreg::SREG_SPEC>,
 }
 #[doc = "CCP register accessor: an alias for `Reg<CCP_SPEC>`"]
 pub type CCP = crate::attiny412pac::Reg<ccp::CCP_SPEC>;
@@ -21,3 +23,7 @@ pub mod sph;
 pub type SPL = crate::attiny412pac::Reg<spl::SPL_SPEC>;
 #[doc = "Stack Pointer Low"]
 pub mod spl;
+#[doc = "SREG register accessor: an alias for `Reg<SREG_SPEC>`"]
+pub type SREG = crate::attiny412pac::Reg<sreg::SREG_SPEC>;
+#[doc = "Status Register"]
+pub mod sreg;

@@ -13,3 +13,10 @@ exclude = ["atdfs/*", "svds/*", "build_files/*", "device_files/*", "json_spec_fi
 bare-metal = "0.2.x"
 panic-halt = "0.2.0"
 vcell = "0.1.x"
+
+[profile.release]
+lto = true
+
+[[bin]]
+path = "src/examples/testing.rs"
+name = "test"
